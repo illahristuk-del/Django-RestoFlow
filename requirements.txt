@@ -1,0 +1,16 @@
+django>=5.0
+djangorestframework
+djangorestframework-simplejwt
+psycopg2-binary
+redis
+celery
+django-celery-beat
+django-filter
+django-mptt
+django-fsm
+drf-spectacular
+django-debug-toolbar
+sentry-sdk
+pytest
+pytest-django
+factory-boy
