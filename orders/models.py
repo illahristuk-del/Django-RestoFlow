@@ -1,7 +1,8 @@
 import uuid
+from decimal import Decimal
+
 from django.db import models
 from django.core.validators import MinValueValidator
-from decimal import Decimal
 
 
 class Table(models.Model):
@@ -31,6 +32,7 @@ class Order(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.00'))],
     )
+    eta = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=15, choices=Status.choices, default=Status.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
