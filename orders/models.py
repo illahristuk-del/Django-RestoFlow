@@ -26,6 +26,15 @@ class Order(models.Model):
         COMPLETED = 'completed', 'Completed'
         CANCELLED = 'cancelled', 'Cancelled'
 
+    ALLOWED_TRANSITIONS = {
+        'pending': ['cooking', 'cancelled'],
+        'cooking': ['ready', 'cancelled'],
+        'ready': ['completed', 'cancelled'],
+        'completed': [],
+        'cancelled': [],
+    }
+
+
     order_number = models.CharField(max_length=20, unique=True, default=uuid.uuid4, editable=False)
     total_sum = models.DecimalField(
         max_digits=10,
@@ -41,9 +50,20 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name='orders',
     )
+    user = models.ForeignKey(
+        'accounts.CustomUser',
+        on_delete=models.CASCADE,
+        related_name='user_orders'
+        )
 
     def __str__(self):
         return f'Order {self.order_number}'
+
+    def transition(self, new_status):
+        if new_status not in self.ALLOWED_TRANSITIONS[self.status]:
+            raise ValueError(f"Cannot transition from {self.status} to {new_status}")
+        self.status = new_status
+        self.save()
 
 
 class OrderItem(models.Model):

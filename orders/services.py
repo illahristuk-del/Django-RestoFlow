@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
+from accounts.models import CustomUser, ClientBonus
 from orders.models import Table, OrderItem, Order
 from menu.models import Modifier, Dish
 from orders.tasks import update_order_eta
@@ -21,7 +22,11 @@ def create_order(user, table_id: int, items: list):
         table_instance.status = 'occupied'
         table_instance.save()
         
-        order = Order.objects.create(total_sum=Decimal('0.00'), table=table_instance)
+        order = Order.objects.create(
+            total_sum=Decimal('0.00'), 
+            table=table_instance,
+            user=user
+        )
 
         total_sum = Decimal('0.00')
 
@@ -55,4 +60,43 @@ def create_order(user, table_id: int, items: list):
 
         return order
 
+def accrue_bonus(order):
+    user = order.user
+    if user.role != 'client':
+        raise ValidationError("user is not a client")
+
+    calculate_bonuses = order.total_sum * Decimal('0.05')
+
+    client_bonus = ClientBonus.objects.create(
+        client=user,
+        order=order,
+        bonuses=calculate_bonuses
+    )
+
+    return {'client': user, 'order': order, 'bonuses': calculate_bonuses}    
+
+def update_order_status(order_id, new_status):
+    with transaction.atomic():
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            raise ValidationError("Order not found")
+
+        order.transition(new_status)
+
+        if new_status == 'cooking':
+            print(f'Notification for kitchen\n')
+            print(f'Order: {order}')
         
+        if new_status == 'completed':
+            order.table.status = 'free'
+            order.table.save()
+            print(f'Table {order.table.table_number} is free')
+            accrue_bonus(order)
+            
+
+
+
+
+
+
