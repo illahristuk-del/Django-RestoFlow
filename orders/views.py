@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import OrderCreateSerializer
-from .services import create_order
+from .serializers import OrderCreateSerializer, NewStatusSerializer
+from .services import create_order, update_order_status
 
 class CreateOrder(APIView):
     def post(self, request):
@@ -19,3 +19,18 @@ class CreateOrder(APIView):
             {'order_number': str(order.order_number)},
             status=status.HTTP_201_CREATED
             )
+    
+class NewStatus(APIView):
+    def patch(self, request, order_id):
+        serializer = NewStatusSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        new_status = serializer.validated_data['status']
+
+        update_status = update_order_status(order_id, new_status)
+
+        return Response(
+            {f'order_id': order_id, 'order_status': new_status},
+            status=status.HTTP_200_OK
+        )

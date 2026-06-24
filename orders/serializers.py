@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import Order
 
 
 class OrderItemSerializer(serializers.Serializer):
@@ -13,3 +14,6 @@ class OrderItemSerializer(serializers.Serializer):
 class OrderCreateSerializer(serializers.Serializer):
     table_id = serializers.IntegerField()
     items = OrderItemSerializer(many=True)
+
+class NewStatusSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=Order.Status.choices)
