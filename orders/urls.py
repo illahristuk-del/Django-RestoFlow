@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import CreateOrder, NewStatus
+from .views import CreateOrder, NewStatus, PopularDishes
 
 urlpatterns = [
     path('orders/create/', CreateOrder.as_view(), name='create_order'),
-    path('orders/<int:order_id>/status/', NewStatus.as_view(), name='change_order_status')
+    path('orders/<int:order_id>/status/', NewStatus.as_view(), name='change_order_status'),
+    path('reports/popular-dishes/', PopularDishes.as_view(), name='get_top10_popular_dishes')
 ]
