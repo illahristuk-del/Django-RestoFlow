@@ -1,9 +1,14 @@
 from decimal import Decimal
 
+from datetime import timedelta
+
 from django.db import transaction
+from django.db.models import Sum
+from django.utils import timezone
+
 from rest_framework.exceptions import ValidationError
 
-from accounts.models import CustomUser, ClientBonus
+from accounts.models import ClientBonus
 from orders.models import Table, OrderItem, Order
 from menu.models import Modifier, Dish
 from orders.tasks import update_order_eta
@@ -94,9 +99,15 @@ def update_order_status(order_id, new_status):
             print(f'Table {order.table.table_number} is free')
             accrue_bonus(order)
             
+def get_popular_dishes():
+    week_ago = timezone.now() - timedelta(days=7)
 
+    popular = (
+        OrderItem.objects
+        .filter(order__created_at__gte=week_ago)
+        .values('dish__name')
+        .annotate(total=Sum('quantity'))
+        .order_by('-total')[:10]
+    )
 
-
-
-
-
+    return list(popular)
