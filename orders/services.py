@@ -11,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 from accounts.models import ClientBonus
 from orders.models import Table, OrderItem, Order
 from menu.models import Modifier, Dish
-from orders.tasks import update_order_eta
+from orders.tasks import update_order_eta, send_order_notification
 
 
 def create_order(user, table_id: int, items: list):
@@ -98,6 +98,9 @@ def update_order_status(order_id, new_status):
             order.table.save()
             print(f'Table {order.table.table_number} is free')
             accrue_bonus(order)
+
+        send_order_notification.delay(order.id)    
+        
             
 def get_popular_dishes():
     week_ago = timezone.now() - timedelta(days=7)

@@ -90,3 +90,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.dish} x{self.quantity}'
+    
+
+class Report(models.Model):
+    date = models.DateField(unique=True)
+    revenue = models.DecimalField(max_digits=12, decimal_places=2)
+    popular_items = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Report {self.date}'
+    
