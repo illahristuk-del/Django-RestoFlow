@@ -3,7 +3,7 @@ from .models import Dish
 
 def get_menu_for_cache():
     data = cache.get('menu')
-    if not data:
+    if data is None:
         data = list(
             Dish.objects.select_related('category').
             prefetch_related('modifier_groups').
