@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
+
 from datetime import timedelta
 from pathlib import Path
-import os
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -159,4 +161,12 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': 'redis://localhost:6379/1',
     }
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'daily-report':
+    {
+        'task': 'order.tasks.generate_monthly_report',
+        'schedule': crontab(hour=0, minute=0),
+    },
 }
