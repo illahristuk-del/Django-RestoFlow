@@ -1,12 +1,17 @@
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter
 
-from .serializers import OrderCreateSerializer, NewStatusSerializer
+from .serializers import OrderCreateSerializer, NewStatusSerializer, OrderSerializer
 from .services import create_order, update_order_status, get_popular_dishes
+from .filters import OrderFilter
+from .models import Order
 
 class CreateOrder(APIView):
     def post(self, request):
@@ -39,9 +44,19 @@ class NewStatus(APIView):
             status=status.HTTP_200_OK
         )
 
+
+class OrderListFilter(ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = OrderFilter
+    search_fields = ['order_number']
+
+
 @method_decorator(cache_page(60 * 60), name='get')
 class PopularDishes(APIView):
     def get(self, request):
         popular_dishes_list = get_popular_dishes()
         return Response(popular_dishes_list)
-    
+
+

@@ -4,5 +4,5 @@ from .views import PhoneTokenView
 
 urlpatterns = [
     path('login/', PhoneTokenView.as_view(), name='login'),
-    path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

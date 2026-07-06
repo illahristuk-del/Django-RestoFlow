@@ -146,6 +146,9 @@ REST_FRAMEWORK ={
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 SIMPLE_JWT = {
@@ -166,7 +169,14 @@ CACHES = {
 CELERY_BEAT_SCHEDULE = {
     'daily-report':
     {
-        'task': 'order.tasks.generate_monthly_report',
+        'task': 'orders.tasks.generate_monthly_report',
         'schedule': crontab(hour=0, minute=0),
     },
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'RestoFlow API',
+    'DESCRIPTION': 'Система управления заказами ресторана',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
