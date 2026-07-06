@@ -159,12 +159,20 @@ SIMPLE_JWT = {
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+#        'LOCATION': 'redis://localhost:6379/1',
+#    }
+#}
+
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://localhost:6379/1',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+CELERY_TASK_ALWAYS_EAGER = True
 
 CELERY_BEAT_SCHEDULE = {
     'daily-report':
