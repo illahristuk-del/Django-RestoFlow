@@ -26,7 +26,7 @@ def send_order_notification(order_id):
 
     time.sleep(5)
 
-    print(f'notification sent to {order.user.phone_number}'
+    print(f'notification sent to {order.user.phone_number}\n'
         f'order status updated to -> {order.status}')
     
 @shared_task
@@ -35,7 +35,7 @@ def generate_monthly_report():
     from django.db.models import Sum
     from decimal import Decimal
 
-    yesterday = timezone.utc().date() - timedelta(days=1)
+    yesterday = timezone.now().date() - timedelta(days=1)
 
     revenue = Order.objects.filter(
         created_at__date = yesterday,

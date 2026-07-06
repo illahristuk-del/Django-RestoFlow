@@ -95,7 +95,7 @@ class OrderItem(models.Model):
 class Report(models.Model):
     date = models.DateField(unique=True)
     revenue = models.DecimalField(max_digits=12, decimal_places=2)
-    popular_items = models.JSONField()
+    popular_dishes = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
