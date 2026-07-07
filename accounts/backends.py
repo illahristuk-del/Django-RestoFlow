@@ -3,8 +3,9 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class PhoneBackend(ModelBackend):
-    def authenticate(self, request, phone_number=None, password = None, **kwargs):
+    def authenticate(self, request, phone_number=None, password=None, **kwargs):
         try:
             user = User.objects.get(phone_number=phone_number)
             if user.check_password(password):
