@@ -9,24 +9,63 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0001_initial'),
-        ('orders', '0003_order_user'),
+        ("accounts", "0001_initial"),
+        ("orders", "0003_order_user"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='role',
-            field=models.CharField(choices=[('admin', 'Admin'), ('manager', 'Manager'), ('cook', 'Cook'), ('courier', 'Courier'), ('client', 'Client')], default='client', max_length=15),
+            model_name="customuser",
+            name="role",
+            field=models.CharField(
+                choices=[
+                    ("admin", "Admin"),
+                    ("manager", "Manager"),
+                    ("cook", "Cook"),
+                    ("courier", "Courier"),
+                    ("client", "Client"),
+                ],
+                default="client",
+                max_length=15,
+            ),
         ),
         migrations.CreateModel(
-            name='ClientBonus',
+            name="ClientBonus",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bonuses', models.DecimalField(decimal_places=2, max_digits=10, validators=[django.core.validators.MinValueValidator(0)])),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bonuses', to=settings.AUTH_USER_MODEL)),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='order_bonuses', to='orders.order')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "bonuses",
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=10,
+                        validators=[django.core.validators.MinValueValidator(0)],
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "client",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="bonuses",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="order_bonuses",
+                        to="orders.order",
+                    ),
+                ),
             ],
         ),
     ]
